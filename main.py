@@ -390,6 +390,7 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata):
 
 @bot.event
 async def on_ready():
+    await bot.tree.sync() # Komutları senkronize et
     await bot.change_presence(status=discord.Status.dnd)
     print(f'{bot.user} başarıyla giriş yaptı ve durumu "Rahatsız Etme" olarak ayarlandı.')
 
