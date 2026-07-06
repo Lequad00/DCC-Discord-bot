@@ -59,7 +59,7 @@ KUFUR_LISTESI = [
     "nigga", "nigger",
     "retard",
     "idiot", "stupid",
-    "hell", "damn", "damnit",
+    "damn", "damnit",
     "motherfucker", "mf",
     "wtf", "stfu",
 ]
