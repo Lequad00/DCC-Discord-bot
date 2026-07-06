@@ -388,5 +388,9 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata):
     else:
         await interaction.response.send_message(mesaj, ephemeral=True)
 
-bot.run(os.environ['TOKEN'])
+@bot.event
+async def on_ready():
+    await bot.change_presence(status=discord.Status.dnd)
+    print(f'{bot.user} başarıyla giriş yaptı ve durumu "Rahatsız Etme" olarak ayarlandı.')
 
+bot.run(os.environ['TOKEN'])
