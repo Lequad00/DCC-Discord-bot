@@ -369,7 +369,11 @@ async def durum(interaction: discord.Interaction, degistir: str):
         await interaction.followup.send("❌ Bu komutu kullanmak için gerekli yetkiye sahip değilsin.", ephemeral=True)
         return
 
-    durum_map = { ... } # Burası aynı kalsın
+   durum_map = {
+        "online": discord.Status.online,
+        "idle": discord.Status.idle,
+        "dnd": discord.Status.dnd
+    }
     await bot.change_presence(status=durum_map.get(degistir))
     
     # EN SONDAKİ SATIRI DA BÖYLE DEĞİŞTİRİYORSUN:
