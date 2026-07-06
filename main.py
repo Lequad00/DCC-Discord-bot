@@ -394,11 +394,19 @@ async def on_ready():
     # 1. Durumu ayarla
     game = discord.Game("SCP Roleplay oynuyor")
     await bot.change_presence(status=discord.Status.online, activity=game)
+
+    # 2. Komutları temizle ve sadece güncel olanları yükle
+    # 'guild=None' yaparak global komutları hedefliyoruz
+    # bot.tree.clear_commands(guild=None) komutu eskileri temizler
+    bot.tree.clear_commands(guild=None) 
     
-    # 2. Komutları senkronize et
-    synced = await bot.tree.sync()
-    print(f'{len(synced)} komut senkronize edildi!')
-    print(f'{bot.user} giriş yaptı ve hazır!')
+    # Sunucu özelinde de temizlik yap (eğer özel sunucu ID'n varsa buraya yaz)
+    # bot.tree.clear_commands(guild=discord.Object(id=SUNUCU_ID_BURAYA))
+    
+    # 3. Şimdi tertemiz listeyi senkronize et
+    await bot.tree.sync()
+    
+    print(f'{bot.user} giriş yaptı, komutlar temizlendi ve senkronize edildi!')
 
 bot.run(os.environ['TOKEN'])
 
