@@ -376,3 +376,35 @@ async def on_ready():
     print(f'{bot.user} giriş yaptı ve hazır!')
 
 bot.run(os.environ['TOKEN'])
+
+# ── ROL KONTROLLÜ DURUM DEĞİŞTİRME KOMUTU ───────────────────────────────
+@bot.tree.command(name="durum", description="Botun çevrimiçi durumunu değiştirir.")
+@discord.app_commands.describe(durum="Seçmek istediğin durum")
+@discord.app_commands.choices(durum=[
+    discord.app_commands.Choice(name="Çevrimiçi", value="online"),
+    discord.app_commands.Choice(name="Boşta", value="idle"),
+    discord.app_commands.Choice(name="Rahatsız Etme", value="dnd")
+])
+async def durum(interaction: discord.Interaction, durum: str):
+    # İzin verilen Rol ID'si
+    gerekli_rol_id = 1521970736627978362
+    
+    # Kullanıcının rollerini kontrol et
+    kullanici_rolleri = [rol.id for rol in interaction.user.roles]
+    
+    if gerekli_rol_id not in kullanici_rolleri:
+        await interaction.response.send_message("❌ Bu komutu kullanmak için gerekli yetkiye sahip değilsin.", ephemeral=True)
+        return
+
+    durum_map = {
+        "online": discord.Status.online,
+        "idle": discord.Status.idle,
+        "dnd": discord.Status.dnd
+    }
+    
+    yeni_durum = durum_map.get(durum)
+    
+    # Durumu güncelle
+    await bot.change_presence(status=yeni_durum, activity=bot.activity)
+    
+    await interaction.response.send_message(f"✅ Durum başarıyla **{durum}** olarak değiştirildi.", ephemeral=True)
