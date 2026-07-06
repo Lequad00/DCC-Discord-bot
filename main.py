@@ -378,6 +378,11 @@ async def on_ready():
 bot.run(os.environ['TOKEN'])
 
 # ── ROL KONTROLLÜ DURUM DEĞİŞTİRME KOMUTU ───────────────────────────────
+
+@bot.event
+async def on_ready():
+    await bot.tree.sync() # Komutları Discord'a kaydeder
+    print(f"{bot.user} olarak giriş yapıldı ve komutlar senkronize edildi!")
 @bot.tree.command(name="durum", description="Botun çevrimiçi durumunu değiştirir.")
 @discord.app_commands.describe(durum="Seçmek istediğin durum")
 @discord.app_commands.choices(durum=[
