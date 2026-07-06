@@ -377,27 +377,18 @@ async def on_ready():
 
 bot.run(os.environ['TOKEN'])
 
-# ── ROL KONTROLLÜ DURUM DEĞİŞTİRME KOMUTU ───────────────────────────────
-
-@bot.event
-async def on_ready():
-    await bot.tree.sync() # Komutları Discord'a kaydeder
-    print(f"{bot.user} olarak giriş yapıldı ve komutlar senkronize edildi!")
-@bot.tree.command(name="durum", description="Botun çevrimiçi durumunu değiştirir.")
-@discord.app_commands.describe(durum="Seçmek istediğin durum")
-@discord.app_commands.choices(durum=[
+# ── GÜNCELLENMİŞ DURUM DEĞİŞTİRME KOMUTU ───────────────────────────────
+@bot.tree.command(name="durum", description="Botun durumunu değiştirir.")
+@discord.app_commands.describe(degistir="Seçmek istediğin durum")
+@discord.app_commands.choices(degistir=[
     discord.app_commands.Choice(name="Çevrimiçi", value="online"),
     discord.app_commands.Choice(name="Boşta", value="idle"),
     discord.app_commands.Choice(name="Rahatsız Etme", value="dnd")
 ])
-async def durum(interaction: discord.Interaction, durum: str):
-    # İzin verilen Rol ID'si
+async def durum(interaction: discord.Interaction, degistir: str):
+    # Yetki kontrolü
     gerekli_rol_id = 1521970736627978362
-    
-    # Kullanıcının rollerini kontrol et
-    kullanici_rolleri = [rol.id for rol in interaction.user.roles]
-    
-    if gerekli_rol_id not in kullanici_rolleri:
+    if not any(rol.id == gerekli_rol_id for rol in interaction.user.roles):
         await interaction.response.send_message("❌ Bu komutu kullanmak için gerekli yetkiye sahip değilsin.", ephemeral=True)
         return
 
@@ -407,9 +398,7 @@ async def durum(interaction: discord.Interaction, durum: str):
         "dnd": discord.Status.dnd
     }
     
-    yeni_durum = durum_map.get(durum)
+    yeni_durum = durum_map.get(degistir)
+    await bot.change_presence(status=yeni_durum)
     
-    # Durumu güncelle
-    await bot.change_presence(status=yeni_durum, activity=bot.activity)
-    
-    await interaction.response.send_message(f"✅ Durum başarıyla **{durum}** olarak değiştirildi.", ephemeral=True)
+    await interaction.response.send_message(f"✅ Durum başarıyla **{degistir}** olarak değiştirildi.", ephemeral=True)
