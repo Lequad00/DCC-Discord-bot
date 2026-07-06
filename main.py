@@ -391,14 +391,13 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata):
 # ── HAZIR ─────────────────────────────────────────────────
 @bot.event
 async def on_ready():
+    # 1. Durumu ayarla
     game = discord.Game("SCP Roleplay oynuyor")
     await bot.change_presence(status=discord.Status.online, activity=game)
-    for guild in bot.guilds:
-        bot.tree.copy_global_to(guild=guild)
-        synced = await bot.tree.sync(guild=guild)
-        print(f'{len(synced)} komut senkronize edildi: {guild.name}')
-        for cmd in synced:
-            print(f'  - /{cmd.name}')
+    
+    # 2. Komutları senkronize et
+    synced = await bot.tree.sync()
+    print(f'{len(synced)} komut senkronize edildi!')
     print(f'{bot.user} giriş yaptı ve hazır!')
 
 bot.run(os.environ['TOKEN'])
