@@ -349,6 +349,32 @@ async def unmute(interaction: discord.Interaction, uye: discord.Member, sebep: s
     embed.set_footer(text=f"İşlemi yapan: {interaction.user}")
     await interaction.response.send_message(embed=embed)
 
+# ── GÜNCELLENMİŞ DURUM DEĞİŞTİRME KOMUTU ───────────────────────────────
+# Bu senin taşıdığın blok
+@bot.tree.command(name="durum", description="Botun durumunu değiştirir.")
+@discord.app_commands.describe(degistir="Seçmek istediğin durum")
+@discord.app_commands.choices(degistir=[
+    discord.app_commands.Choice(name="Çevrimiçi", value="online"),
+    discord.app_commands.Choice(name="Boşta", value="idle"),
+    discord.app_commands.Choice(name="Rahatsız Etme", value="dnd")
+])
+async def durum(interaction: discord.Interaction, degistir: str):
+    # İŞTE EKLEMEN GEREKEN SATIR BURASI:
+    await interaction.response.defer(ephemeral=True)
+
+    # Aşağıda zaten yetki kontrolün ve diğer kodların var, onlara dokunma
+    gerekli_rol_id = 1521970736627978362
+    if not any(rol.id == gerekli_rol_id for rol in interaction.user.roles):
+        # Burayı da düzeltiyoruz (aşağıda anlatacağım)
+        await interaction.followup.send("❌ Bu komutu kullanmak için gerekli yetkiye sahip değilsin.", ephemeral=True)
+        return
+
+    durum_map = { ... } # Burası aynı kalsın
+    await bot.change_presence(status=durum_map.get(degistir))
+    
+    # EN SONDAKİ SATIRI DA BÖYLE DEĞİŞTİRİYORSUN:
+    await interaction.followup.send(f"✅ Durum başarıyla **{degistir}** olarak değiştirildi.")
+
 # ── GENEL HATA YÖNETİCİSİ ────────────────────────────────
 @bot.tree.error
 async def hata_yoneticisi(interaction: discord.Interaction, hata):
@@ -377,28 +403,3 @@ async def on_ready():
 
 bot.run(os.environ['TOKEN'])
 
-# ── GÜNCELLENMİŞ DURUM DEĞİŞTİRME KOMUTU ───────────────────────────────
-@bot.tree.command(name="durum", description="Botun durumunu değiştirir.")
-@discord.app_commands.describe(degistir="Seçmek istediğin durum")
-@discord.app_commands.choices(degistir=[
-    discord.app_commands.Choice(name="Çevrimiçi", value="online"),
-    discord.app_commands.Choice(name="Boşta", value="idle"),
-    discord.app_commands.Choice(name="Rahatsız Etme", value="dnd")
-])
-async def durum(interaction: discord.Interaction, degistir: str):
-    # Yetki kontrolü
-    gerekli_rol_id = 1521970736627978362
-    if not any(rol.id == gerekli_rol_id for rol in interaction.user.roles):
-        await interaction.response.send_message("❌ Bu komutu kullanmak için gerekli yetkiye sahip değilsin.", ephemeral=True)
-        return
-
-    durum_map = {
-        "online": discord.Status.online,
-        "idle": discord.Status.idle,
-        "dnd": discord.Status.dnd
-    }
-    
-    yeni_durum = durum_map.get(degistir)
-    await bot.change_presence(status=yeni_durum)
-    
-    await interaction.response.send_message(f"✅ Durum başarıyla **{degistir}** olarak değiştirildi.", ephemeral=True)
