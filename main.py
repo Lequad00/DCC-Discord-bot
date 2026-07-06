@@ -359,25 +359,21 @@ async def unmute(interaction: discord.Interaction, uye: discord.Member, sebep: s
     discord.app_commands.Choice(name="Rahatsız Etme", value="dnd")
 ])
 async def durum(interaction: discord.Interaction, degistir: str):
-    # İŞTE EKLEMEN GEREKEN SATIR BURASI:
     await interaction.response.defer(ephemeral=True)
 
-    # Aşağıda zaten yetki kontrolün ve diğer kodların var, onlara dokunma
     gerekli_rol_id = 1521970736627978362
     if not any(rol.id == gerekli_rol_id for rol in interaction.user.roles):
-        # Burayı da düzeltiyoruz (aşağıda anlatacağım)
         await interaction.followup.send("❌ Bu komutu kullanmak için gerekli yetkiye sahip değilsin.", ephemeral=True)
         return
 
-   durum_map = {
+    durum_map = {
         "online": discord.Status.online,
         "idle": discord.Status.idle,
         "dnd": discord.Status.dnd
     }
     await bot.change_presence(status=durum_map.get(degistir))
-    
-    # EN SONDAKİ SATIRI DA BÖYLE DEĞİŞTİRİYORSUN:
-    await interaction.followup.send(f"✅ Durum başarıyla **{degistir}** olarak değiştirildi.")
+    await interaction.followup.send(f"✅ Durum başarıyla **{degistir}** olarak değiştirildi.", ephemeral=True)
+
 
 # ── GENEL HATA YÖNETİCİSİ ────────────────────────────────
 @bot.tree.error
