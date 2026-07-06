@@ -389,24 +389,25 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata):
         await interaction.response.send_message(mesaj, ephemeral=True)
 
 # ── HAZIR ─────────────────────────────────────────────────
-@bot.event
-async def on_ready():
-    # 1. Durumu ayarla
-    game = discord.Game("SCP Roleplay oynuyor")
-    await bot.change_presence(status=discord.Status.online, activity=game)
+@bot.tree.command(name="durum", description="Botun durumunu değiştirir.")
+# ... (choices ve diğer kısımlar)
+async def durum(interaction: discord.Interaction, degistir: str):
+    # 1. HEMEN BURAYA EKLE:
+    await interaction.response.defer(ephemeral=True)
 
-    # 2. Komutları temizle ve sadece güncel olanları yükle
-    # 'guild=None' yaparak global komutları hedefliyoruz
-    # bot.tree.clear_commands(guild=None) komutu eskileri temizler
-    bot.tree.clear_commands(guild=None) 
+    # 2. Yetki kontrolün
+    gerekli_rol_id = 1521970736627978362
+    if not any(rol.id == gerekli_rol_id for rol in interaction.user.roles):
+        # 3. BURAYI DA DÜZELT (send yerine followup.send kullan):
+        await interaction.followup.send("❌ Bu komutu kullanmak için gerekli yetkiye sahip değilsin.", ephemeral=True)
+        return
+
+    # 4. İşlemin
+    durum_map = { ... }
+    await bot.change_presence(status=durum_map.get(degistir))
     
-    # Sunucu özelinde de temizlik yap (eğer özel sunucu ID'n varsa buraya yaz)
-    # bot.tree.clear_commands(guild=discord.Object(id=SUNUCU_ID_BURAYA))
-    
-    # 3. Şimdi tertemiz listeyi senkronize et
-    await bot.tree.sync()
-    
-    print(f'{bot.user} giriş yaptı, komutlar temizlendi ve senkronize edildi!')
+    # 5. EN SON CEVAP VERİRKEN DE followup.send KULLAN:
+    await interaction.followup.send(f"✅ Durum başarıyla **{degistir}** olarak değiştirildi.", ephemeral=True)
 
 bot.run(os.environ['TOKEN'])
 
