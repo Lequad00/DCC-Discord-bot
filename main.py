@@ -388,26 +388,5 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata):
     else:
         await interaction.response.send_message(mesaj, ephemeral=True)
 
-# ── HAZIR ─────────────────────────────────────────────────
-@bot.tree.command(name="durum", description="Botun durumunu değiştirir.")
-# ... (choices ve diğer kısımlar)
-async def durum(interaction: discord.Interaction, degistir: str):
-    # 1. HEMEN BURAYA EKLE:
-    await interaction.response.defer(ephemeral=True)
-
-    # 2. Yetki kontrolün
-    gerekli_rol_id = 1521970736627978362
-    if not any(rol.id == gerekli_rol_id for rol in interaction.user.roles):
-        # 3. BURAYI DA DÜZELT (send yerine followup.send kullan):
-        await interaction.followup.send("❌ Bu komutu kullanmak için gerekli yetkiye sahip değilsin.", ephemeral=True)
-        return
-
-    # 4. İşlemin
-    durum_map = { ... }
-    await bot.change_presence(status=durum_map.get(degistir))
-    
-    # 5. EN SON CEVAP VERİRKEN DE followup.send KULLAN:
-    await interaction.followup.send(f"✅ Durum başarıyla **{degistir}** olarak değiştirildi.", ephemeral=True)
-
 bot.run(os.environ['TOKEN'])
 
