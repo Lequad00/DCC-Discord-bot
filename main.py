@@ -388,10 +388,17 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata):
     else:
         await interaction.response.send_message(mesaj, ephemeral=True)
 
+# ... (Diğer kodların bittiği yer)
+
 @bot.event
 async def on_ready():
-    await bot.tree.sync() # Komutları senkronize et
+    # bot.tree.sync() sadece gerektiğinde çalıştırılmalı, 
+    # sürekli her açılışta çalıştırmak bazen sorun yaratabilir.
+    # Eğer komutlarında değişiklik yapmadıysan bu satırı yoruma alabilirsin (#).
+    # await bot.tree.sync() 
+    
     await bot.change_presence(status=discord.Status.dnd)
     print(f'{bot.user} başarıyla giriş yaptı ve durumu "Rahatsız Etme" olarak ayarlandı.')
 
+# BOTUN ÇALIŞMASINI BAŞLATAN SATIR EN SONDA VE EN SOLDA OLMALI
 bot.run(os.environ['TOKEN'])
