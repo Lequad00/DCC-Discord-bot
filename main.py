@@ -392,11 +392,9 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata):
 
 @bot.event
 async def on_ready():
-    # Sadece bir kereliğine çalıştırıp sonra sil
-    bot.tree.clear_commands(guild=None) # Sunucuya özel komutlar varsa guild ID gir
-    await bot.tree.sync()
-    print("Komutlar temizlendi ve senkronize edildi.")
-
+    # Komutları Discord'a senkronize et
+    await bot.tree.sync() 
+    print(f"{bot.user} başarıyla giriş yaptı ve komutlar senkronize edildi.")
 from flask import Flask
 from threading import Thread
 
