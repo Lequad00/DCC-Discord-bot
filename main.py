@@ -392,13 +392,10 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata):
 
 @bot.event
 async def on_ready():
-    # bot.tree.sync() sadece gerektiğinde çalıştırılmalı, 
-    # sürekli her açılışta çalıştırmak bazen sorun yaratabilir.
-    # Eğer komutlarında değişiklik yapmadıysan bu satırı yoruma alabilirsin (#).
-    # await bot.tree.sync() 
-    
-    await bot.change_presence(status=discord.Status.dnd)
-    print(f'{bot.user} başarıyla giriş yaptı ve durumu "Rahatsız Etme" olarak ayarlandı.')
+    # Sadece bir kereliğine çalıştırıp sonra sil
+    bot.tree.clear_commands(guild=None) # Sunucuya özel komutlar varsa guild ID gir
+    await bot.tree.sync()
+    print("Komutlar temizlendi ve senkronize edildi.")
 
 from flask import Flask
 from threading import Thread
