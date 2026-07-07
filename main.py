@@ -400,5 +400,20 @@ async def on_ready():
     await bot.change_presence(status=discord.Status.dnd)
     print(f'{bot.user} başarıyla giriş yaptı ve durumu "Rahatsız Etme" olarak ayarlandı.')
 
+from flask import Flask
+from threading import Thread
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot aktif!"
+
+def run():
+    app.run(host='0.0.0.0', port=3000)
+
+t = Thread(target=run)
+t.start()
+
 # BOTUN ÇALIŞMASINI BAŞLATAN SATIR EN SONDA VE EN SOLDA OLMALI
 bot.run(os.environ['TOKEN'])
