@@ -23,7 +23,7 @@ threading.Thread(target=run_web, daemon=True).start()
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
-bot = commands.Bot(command_prefix="/", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 VERIFY_ROLE_ID = 1521967908341682316
 WELCOME_CHANNEL_ID = 1523295990164230224
