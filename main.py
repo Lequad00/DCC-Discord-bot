@@ -7,6 +7,8 @@ import asyncio
 import re
 from flask import Flask
 
+MY_GUILD = discord.Object(id=1521961088537592019) # Sunucu ID'ni kopyalayıp buraya yaz
+
 # Web server for UptimeRobot
 app = Flask(__name__)
 
