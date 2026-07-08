@@ -7,8 +7,6 @@ import asyncio
 import re
 from flask import Flask
 
-MY_GUILD = discord.Object(id=1521961088537592019) # Sunucu ID'ni kopyalayıp buraya yaz
-
 # Web server for UptimeRobot
 app = Flask(__name__)
 
@@ -379,12 +377,8 @@ async def durum(interaction: discord.Interaction, degistir: str):
 
 # ── GENEL HATA YÖNETİCİSİ ────────────────────────────────
 @bot.tree.error
-async def hata_yoneticisi(interaction: discord.Interaction, hata: discord.app_commands.AppCommandError):
-    # Fonksiyonun gövdesi (aşağıdaki satır bir TAB veya 4 boşluk içeride olmalı!)
-    komut_adi = interaction.command.name if interaction.command else "Bilinmeyen"
-    print(f"[HATA] /{komut_adi}: {hata}")
-    
-    # ... geri kalan kodların da içeride kalmalı ...
+async def hata_yoneticisi(interaction: discord.Interaction, hata):
+    print(f"[HATA] /{interaction.command.name}: {hata}")
     if isinstance(hata, discord.app_commands.MissingPermissions):
         mesaj = "❌ Bu komutu kullanmak için yetkin yok."
     else:
@@ -395,15 +389,12 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata: discord.app_co
         await interaction.response.send_message(mesaj, ephemeral=True)
 
 # ... (Diğer kodların bittiği yer)
+
 @bot.event
 async def on_ready():
-    # 1. TÜM ESKİ KOMUTLARI SUNUCUDAN SİL (Çift komut sorununu kökten çözer)
-    bot.tree.clear_commands(guild=None) 
-    
-    # 2. GÜNCEL KOMUTLARI YÜKLE
-    await bot.tree.sync()
-    
-    print(f"{bot.user} başarıyla giriş yaptı, eski komutlar temizlendi ve yenileri yüklendi.")
+    # Komutları Discord'a senkronize et
+    await bot.tree.sync() 
+    print(f"{bot.user} başarıyla giriş yaptı ve komutlar senkronize edildi.")
 from flask import Flask
 from threading import Thread
 
