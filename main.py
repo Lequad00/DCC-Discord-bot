@@ -377,9 +377,12 @@ async def durum(interaction: discord.Interaction, degistir: str):
 
 # ── GENEL HATA YÖNETİCİSİ ────────────────────────────────
 @bot.tree.error
-async def hata_yoneticisi(interaction: discord.Interaction, hata):
-komut_adi = interaction.command.name if interaction.command else "Bilinmeyen"
+async def hata_yoneticisi(interaction: discord.Interaction, hata: discord.app_commands.AppCommandError):
+    # Fonksiyonun gövdesi (aşağıdaki satır bir TAB veya 4 boşluk içeride olmalı!)
+    komut_adi = interaction.command.name if interaction.command else "Bilinmeyen"
     print(f"[HATA] /{komut_adi}: {hata}")
+    
+    # ... geri kalan kodların da içeride kalmalı ...
     if isinstance(hata, discord.app_commands.MissingPermissions):
         mesaj = "❌ Bu komutu kullanmak için yetkin yok."
     else:
