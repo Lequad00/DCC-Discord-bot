@@ -396,6 +396,7 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata: discord.app_co
 @bot.event
 async def on_ready():
     # Sadece bir kez sync yap
+    bot.tree.clear_commands(guild=None)
     await bot.tree.sync()
     print(f"{bot.user} başarıyla giriş yaptı ve komutlar senkronize edildi.")
 from flask import Flask
