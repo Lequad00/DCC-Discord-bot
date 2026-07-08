@@ -395,10 +395,13 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata: discord.app_co
 # ... (Diğer kodların bittiği yer)
 @bot.event
 async def on_ready():
-    # Sadece bir kez sync yap
-    bot.tree.clear_commands(guild=None)
+    # 1. TÜM ESKİ KOMUTLARI SUNUCUDAN SİL (Çift komut sorununu kökten çözer)
+    bot.tree.clear_commands(guild=None) 
+    
+    # 2. GÜNCEL KOMUTLARI YÜKLE
     await bot.tree.sync()
-    print(f"{bot.user} başarıyla giriş yaptı ve komutlar senkronize edildi.")
+    
+    print(f"{bot.user} başarıyla giriş yaptı, eski komutlar temizlendi ve yenileri yüklendi.")
 from flask import Flask
 from threading import Thread
 
