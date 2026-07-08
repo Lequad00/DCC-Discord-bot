@@ -396,15 +396,20 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata: discord.app_co
         await interaction.response.send_message(mesaj, ephemeral=True)
 
 # ... (Diğer kodların bittiği yer)
+MY_GUILD = discord.Object(id=1521961088537592019) # Sunucu ID'ni mutlaka yaz
+
 @bot.event
 async def on_ready():
-    # 1. TÜM ESKİ KOMUTLARI SUNUCUDAN SİL (Çift komut sorununu kökten çözer)
-    bot.tree.clear_commands(guild=None) 
+    # 1. Global (tüm dünyadaki) eski komutları sil
+    bot.tree.clear_commands(guild=None)
+    # 2. Sunucuya özel eski komutları sil
+    bot.tree.clear_commands(guild=MY_GUILD)
     
-    # 2. GÜNCEL KOMUTLARI YÜKLE
-    await bot.tree.sync()
+    # 3. Güncel komutları sadece kendi sunucuna yükle
+    bot.tree.copy_global_to(guild=MY_GUILD)
+    await bot.tree.sync(guild=MY_GUILD)
     
-    print(f"{bot.user} başarıyla giriş yaptı, eski komutlar temizlendi ve yenileri yüklendi.")
+    print(f"Bot {bot.user} hazır. Komutlar {MY_GUILD.id} sunucusuna temiz bir şekilde yüklendi.")
 from flask import Flask
 from threading import Thread
 
