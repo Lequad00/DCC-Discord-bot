@@ -395,16 +395,9 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata: discord.app_co
 # ... (Diğer kodların bittiği yer)
 @bot.event
 async def on_ready():
-    # 1. Eski komutları temizle (Sunucuda çift komut görünmesini engeller)
-    bot.tree.clear_commands(guild=None) 
-    
-    # 2. Yeni komutları senkronize et
+    # Sadece bir kez sync yap
     await bot.tree.sync()
-    
-    # 3. Botun durumunu ayarla
-    await bot.change_presence(status=discord.Status.dnd)
-    
-    print(f"{bot.user} başarıyla giriş yaptı, komutlar senkronize edildi ve durum 'Rahatsız Etme' yapıldı.")
+    print(f"{bot.user} başarıyla giriş yaptı ve komutlar senkronize edildi.")
 from flask import Flask
 from threading import Thread
 
