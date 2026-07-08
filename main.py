@@ -378,7 +378,8 @@ async def durum(interaction: discord.Interaction, degistir: str):
 # ── GENEL HATA YÖNETİCİSİ ────────────────────────────────
 @bot.tree.error
 async def hata_yoneticisi(interaction: discord.Interaction, hata):
-    print(f"[HATA] /{interaction.command.name}: {hata}")
+komut_adi = interaction.command.name if interaction.command else "Bilinmeyen"
+    print(f"[HATA] /{komut_adi}: {hata}")
     if isinstance(hata, discord.app_commands.MissingPermissions):
         mesaj = "❌ Bu komutu kullanmak için yetkin yok."
     else:
@@ -389,12 +390,18 @@ async def hata_yoneticisi(interaction: discord.Interaction, hata):
         await interaction.response.send_message(mesaj, ephemeral=True)
 
 # ... (Diğer kodların bittiği yer)
-
 @bot.event
 async def on_ready():
-    # Komutları Discord'a senkronize et
-    await bot.tree.sync() 
-    print(f"{bot.user} başarıyla giriş yaptı ve komutlar senkronize edildi.")
+    # 1. Eski komutları temizle (Sunucuda çift komut görünmesini engeller)
+    bot.tree.clear_commands(guild=None) 
+    
+    # 2. Yeni komutları senkronize et
+    await bot.tree.sync()
+    
+    # 3. Botun durumunu ayarla
+    await bot.change_presence(status=discord.Status.dnd)
+    
+    print(f"{bot.user} başarıyla giriş yaptı, komutlar senkronize edildi ve durum 'Rahatsız Etme' yapıldı.")
 from flask import Flask
 from threading import Thread
 
