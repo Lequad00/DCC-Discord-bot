@@ -380,8 +380,9 @@ async def durum(interaction: discord.Interaction, degistir: str):
 # ── GENEL HATA YÖNETİCİSİ ────────────────────────────────
 @bot.tree.error
 async def hata_yoneticisi(interaction: discord.Interaction, hata: discord.app_commands.AppCommandError):
-    # Fonksiyonun gövdesi (aşağıdaki satır bir TAB veya 4 boşluk içeride olmalı!)
-    komut_adi = interaction.command.name if interaction.command else "Bilinmeyen"
+    # Eğer komut bulunamadıysa NoneType hatası almamak için kontrol
+    komut_adi = interaction.command.name if interaction.command else "Bilinmeyen Komut"
+    
     print(f"[HATA] /{komut_adi}: {hata}")
     
     # ... geri kalan kodların da içeride kalmalı ...
