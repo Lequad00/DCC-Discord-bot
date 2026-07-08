@@ -400,16 +400,18 @@ MY_GUILD = discord.Object(id=1521961088537592019) # Sunucu ID'ni mutlaka yaz
 
 @bot.event
 async def on_ready():
-    # 1. Global (tüm dünyadaki) eski komutları sil
-    bot.tree.clear_commands(guild=None)
-    # 2. Sunucuya özel eski komutları sil
-    bot.tree.clear_commands(guild=MY_GUILD)
+    # 1. Kendi sunucunu tanımla (ID'n zaten doğru görünüyor)
+    my_guild = discord.Object(id=1521961088537592019) 
     
-    # 3. Güncel komutları sadece kendi sunucuna yükle
-    bot.tree.copy_global_to(guild=MY_GUILD)
-    await bot.tree.sync(guild=MY_GUILD)
+    # 2. ÖNCE SUNUCUDAKİ TÜM KOMUTLARI BİR KEZ SİL (Çift komutları ve hataları temizler)
+    # Bunu şu anki komutlarınla yap ki tertemiz başlasın
+    bot.tree.clear_commands(guild=my_guild)
     
-    print(f"Bot {bot.user} hazır. Komutlar {MY_GUILD.id} sunucusuna temiz bir şekilde yüklendi.")
+    # 3. ŞİMDİ SADECE KENDİ SUNUCUNA YÜKLE
+    bot.tree.copy_global_to(guild=my_guild)
+    await bot.tree.sync(guild=my_guild)
+    
+    print(f"{bot.user} başarıyla giriş yaptı ve komutlar sunucuya senkronize edildi.")
 from flask import Flask
 from threading import Thread
 
