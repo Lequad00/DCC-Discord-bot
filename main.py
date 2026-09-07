@@ -79,15 +79,15 @@ async def on_member_join(member: discord.Member):
     if kanal is None:
         return
     embed = discord.Embed(
-        title="👋 MCQuerzm | Skyblock Hub Sunucusu",
+        title="👋 ᴍᴄǫᴜᴇʀᴢᴍ︱ѕᴋʏʙʟᴏᴄᴋ ʜᴜʙ ѕᴜɴᴜᴄᴜѕᴜ",
         description=(
-            f"Hey {member.mention}, Sunucuya Hoşgeldin\n\n"
+            f"Hey {member.mention}, Sunucuya Hoşgeldin!\n\n"
             f"Lütfen hesap-eşle kanalına giderek `/hesapeşle` komudunu kullan!"
         ),
         color=discord.Color.red()
     )
-    embed.set_thumbnail(url=member.display_avatar.url)
-    embed.set_footer(text=f"Member #{member.guild.member_count}")
+    embed.set_thumbnail(url=üye.display_avatar.url)
+    embed.set_footer(text=f"üye #{member.guild.member_count}")
     await kanal.send(embed=embed)
 
 # ── BAN ───────────────────────────────────────────────────
