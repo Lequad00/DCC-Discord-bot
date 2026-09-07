@@ -79,10 +79,10 @@ async def on_member_join(member: discord.Member):
     if kanal is None:
         return
     embed = discord.Embed(
-        title="👋 Welcome to DCC | Diplomatic Chaos Council!",
+        title="👋 MCQuerzm | Skyblock Hub Sunucusu",
         description=(
-            f"Hey {member.mention}, welcome to the server!\n\n"
-            f"Please head to the verification channel and use `/verify` to gain access."
+            f"Hey {member.mention}, Sunucuya Hoşgeldin\n\n"
+            f"Lütfen hesap-eşle kanalına giderek `/hesapeşle` komudunu kullan!"
         ),
         color=discord.Color.red()
     )
