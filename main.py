@@ -63,10 +63,13 @@ def sure_formatla(td: datetime.timedelta):
 # ── ON READY & COMMAND SYNC ───────────────────────────────
 @bot.event
 async def on_ready():
-    print(f"🔄 {bot.user} bağlandı, komutlar senkronize ediliyor...")
+    print(f"🔄 {bot.user} bağlandı, komutlar aktarılıyor...")
     try:
+        # Önce global komutları tanımlı Guild'e kopyala
+        bot.tree.copy_global_to(guild=MY_GUILD)
+        # Ardından o sunucuya senkronize et
         synced = await bot.tree.sync(guild=MY_GUILD)
-        print(f"✅ Başarılı! Toplam {len(synced)} adet komut bu sunucuya yüklendi.")
+        print(f"✅ BAŞARILI! Toplam {len(synced)} adet komut bu sunucuya yüklendi.")
     except Exception as e:
         print(f"❌ Senkronizasyon hatası: {e}")
 
