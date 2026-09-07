@@ -63,9 +63,13 @@ def sure_formatla(td: datetime.timedelta):
 # ── ON READY & COMMAND SYNC ───────────────────────────────
 @bot.event
 async def on_ready():
-    bot.tree.copy_global_to(guild=MY_GUILD)
-    await bot.tree.sync(guild=MY_GUILD)
-    print(f"✅ {bot.user} başarıyla giriş yaptı ve komutlar sunucuya senkronize edildi.")
+    print(f"🔄 {bot.user} bağlandı, komutlar senkronize ediliyor...")
+    try:
+        # Doğrudan botun tree'sindeki komutları sunucuya senkronize eder
+        synced = await bot.tree.sync(guild=MY_GUILD)
+        print(f"✅ Başarılı! Toplam {len(synced)} adet komut sunucuya yüklendi.")
+    except Exception as e:
+        print(f"❌ Senkronizasyon hatası: {e}")
 
 # ── VERIFY ────────────────────────────────────────────────
 @bot.tree.command(name="verify", description="Verify yourself to gain access to the server.")
