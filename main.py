@@ -20,7 +20,7 @@ def run_web():
 threading.Thread(target=run_web, daemon=True).start()
 
 # ── BOT AYARLARI ──────────────────────────────────────────
-MY_GUILD = discord.Object(id=1521961088537592019)
+MY_GUILD = discord.Object(id=1545763046717263894)
 
 intents = discord.Intents.default()
 intents.members = True
