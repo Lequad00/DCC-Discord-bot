@@ -27,8 +27,7 @@ intents.members = True
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-VERIFY_ROLE_ID = 1521967908341682316
-WELCOME_CHANNEL_ID = 1523295990164230224
+WELCOME_CHANNEL_ID = 1545763050085163023
 
 # ── YARDIMCI FONKSİYONLAR ─────────────────────────────────
 def id_ayristir(metin: str):
@@ -72,26 +71,6 @@ async def on_ready():
         print(f"✅ BAŞARILI! Toplam {len(synced)} adet komut bu sunucuya yüklendi.")
     except Exception as e:
         print(f"❌ Senkronizasyon hatası: {e}")
-
-# ── VERIFY ────────────────────────────────────────────────
-@bot.tree.command(name="verify", description="Verify yourself to gain access to the server.")
-async def verify(interaction: discord.Interaction):
-    rol = interaction.guild.get_role(VERIFY_ROLE_ID)
-    if rol is None:
-        await interaction.response.send_message("❌ Verified role not found. Please contact an admin.", ephemeral=True)
-        return
-    if rol in interaction.user.roles:
-        await interaction.response.send_message("✅ You are already verified!", ephemeral=True)
-        return
-    await interaction.user.add_roles(rol)
-    embed = discord.Embed(title="Member Updated", color=discord.Color.green())
-    embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
-    embed.add_field(name="Added Roles", value=rol.mention, inline=True)
-    embed.add_field(name="Nickname", value=interaction.user.display_name, inline=True)
-    await interaction.response.send_message(
-        content=f"👋 Welcome to **DCC | Diplomatic Chaos Council**, {interaction.user.mention}!",
-        embed=embed
-    )
 
 # ── WELCOME MESSAGE ───────────────────────────────────────
 @bot.event
