@@ -86,8 +86,8 @@ async def on_member_join(member: discord.Member):
         ),
         color=discord.Color.red()
     )
-    embed.set_thumbnail(url=üye.display_avatar.url)
-    embed.set_footer(text=f"üye #{member.guild.member_count}")
+    embed.set_thumbnail(url=member.display_avatar.url)
+    embed.set_footer(text=f"member #{member.guild.member_count}")
     await kanal.send(embed=embed)
 
 # ── BAN ───────────────────────────────────────────────────
