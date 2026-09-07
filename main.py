@@ -7,9 +7,7 @@ import asyncio
 import re
 from flask import Flask
 
-MY_GUILD = discord.Object(id=1521961088537592019) # Sunucu ID'ni kopyalayıp buraya yaz
-
-# Web server for UptimeRobot
+# ── WEB SUNUCUSU (UptimeRobot / Render Ping) ──────────────
 app = Flask(__name__)
 
 @app.route('/')
@@ -21,7 +19,9 @@ def run_web():
 
 threading.Thread(target=run_web, daemon=True).start()
 
-# Bot ayarları
+# ── BOT AYARLARI ──────────────────────────────────────────
+MY_GUILD = discord.Object(id=1521961088537592019)
+
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
@@ -29,6 +29,43 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 VERIFY_ROLE_ID = 1521967908341682316
 WELCOME_CHANNEL_ID = 1523295990164230224
+
+# ── YARDIMCI FONKSİYONLAR ─────────────────────────────────
+def id_ayristir(metin: str):
+    return [int(x) for x in re.findall(r'\d+', metin)]
+
+def sure_ayristir(sure_str: str):
+    match = re.match(r'^(\d+)(dk|sa|g|hafta)$', sure_str.lower())
+    if not match:
+        return None
+    deger, birim = int(match.group(1)), match.group(2)
+    if birim == 'dk':
+        return datetime.timedelta(minutes=deger)
+    elif birim == 'sa':
+        return datetime.timedelta(hours=deger)
+    elif birim == 'g':
+        return datetime.timedelta(days=deger)
+    elif birim == 'hafta':
+        return datetime.timedelta(weeks=deger)
+    return None
+
+def sure_formatla(td: datetime.timedelta):
+    saniye = int(td.total_seconds())
+    gun, kalan = divmod(saniye, 86400)
+    saat, kalan = divmod(kalan, 3600)
+    dakika, _ = divmod(kalan, 60)
+    parcalar = []
+    if gun: parcalar.append(f"{gun} gün")
+    if saat: parcalar.append(f"{saat} saat")
+    if dakika: parcalar.append(f"{dakika} dakika")
+    return " ".join(parcalar) or "0 dakika"
+
+# ── ON READY & COMMAND SYNC ───────────────────────────────
+@bot.event
+async def on_ready():
+    bot.tree.copy_global_to(guild=MY_GUILD)
+    await bot.tree.sync(guild=MY_GUILD)
+    print(f"✅ {bot.user} başarıyla giriş yaptı ve komutlar sunucuya senkronize edildi.")
 
 # ── VERIFY ────────────────────────────────────────────────
 @bot.tree.command(name="verify", description="Verify yourself to gain access to the server.")
@@ -69,7 +106,7 @@ async def on_member_join(member: discord.Member):
     await kanal.send(embed=embed)
 
 # ── BAN ───────────────────────────────────────────────────
-@bot.tree.command(name="ban", description="Bir veya birden fazla üyeyi banla. Geçici ban için 'sure' gir (ör: 7g, 24sa, 30dk).")
+@bot.tree.command(name="ban", description="Bir veya birden fazla üyeyi banla.")
 @discord.app_commands.describe(
     uyeler="Kullanıcı ID'leri veya mention'ları, boşlukla ayır",
     sebep="Ban sebebi",
@@ -166,7 +203,7 @@ async def kick(interaction: discord.Interaction, uyeler: str, sebep: str = "Sebe
     await interaction.followup.send(embed=embed)
 
 # ── MUTE ──────────────────────────────────────────────────
-@bot.tree.command(name="mute", description="Bir veya birden fazla üyeyi sustur. Süre: 10dk, 2sa, 1g, 1hafta")
+@bot.tree.command(name="mute", description="Bir veya birden fazla üyeyi sustur.")
 @discord.app_commands.describe(
     uyeler="Kullanıcı ID'leri veya mention'ları, boşlukla ayır",
     sure="Susturma süresi: ör. 10dk, 2sa, 1g (maks. 28 gün)",
@@ -215,8 +252,7 @@ async def unmute(interaction: discord.Interaction, uye: discord.Member, sebep: s
     embed.set_footer(text=f"İşlemi yapan: {interaction.user}")
     await interaction.response.send_message(embed=embed)
 
-# ── GÜNCELLENMİŞ DURUM DEĞİŞTİRME KOMUTU ───────────────────────────────
-# Bu senin taşıdığın blok
+# ── DURUM DEĞİŞTİRME KOMUTU ──────────────────────────────
 @bot.tree.command(name="durum", description="Botun durumunu değiştirir.")
 @discord.app_commands.describe(degistir="Seçmek istediğin durum")
 @discord.app_commands.choices(degistir=[
@@ -240,56 +276,21 @@ async def durum(interaction: discord.Interaction, degistir: str):
     await bot.change_presence(status=durum_map.get(degistir))
     await interaction.followup.send(f"✅ Durum başarıyla **{degistir}** olarak değiştirildi.", ephemeral=True)
 
-
 # ── GENEL HATA YÖNETİCİSİ ────────────────────────────────
 @bot.tree.error
 async def hata_yoneticisi(interaction: discord.Interaction, hata: discord.app_commands.AppCommandError):
-    # Eğer komut bulunamadıysa NoneType hatası almamak için kontrol
     komut_adi = interaction.command.name if interaction.command else "Bilinmeyen Komut"
-    
     print(f"[HATA] /{komut_adi}: {hata}")
     
-    # ... geri kalan kodların da içeride kalmalı ...
     if isinstance(hata, discord.app_commands.MissingPermissions):
         mesaj = "❌ Bu komutu kullanmak için yetkin yok."
     else:
         mesaj = f"❌ Bir hata oluştu: {hata}"
+
     if interaction.response.is_done():
         await interaction.followup.send(mesaj, ephemeral=True)
     else:
         await interaction.response.send_message(mesaj, ephemeral=True)
 
-# ... (Diğer kodların bittiği yer)
-MY_GUILD = discord.Object(id=1521961088537592019) # Sunucu ID'ni mutlaka yaz
-
-@bot.event
-async def on_ready():
-    # 1. Kendi sunucunu tanımla (ID'n zaten doğru görünüyor)
-    my_guild = discord.Object(id=1521961088537592019) 
-    
-    # 2. ÖNCE SUNUCUDAKİ TÜM KOMUTLARI BİR KEZ SİL (Çift komutları ve hataları temizler)
-    # Bunu şu anki komutlarınla yap ki tertemiz başlasın
-    bot.tree.clear_commands(guild=my_guild)
-    
-    # 3. ŞİMDİ SADECE KENDİ SUNUCUNA YÜKLE
-    bot.tree.copy_global_to(guild=my_guild)
-    await bot.tree.sync(guild=my_guild)
-    
-    print(f"{bot.user} başarıyla giriş yaptı ve komutlar sunucuya senkronize edildi.")
-from flask import Flask
-from threading import Thread
-
-app = Flask('')
-
-@app.route('/')
-def home():
-    return "Bot aktif!"
-
-def run():
-    app.run(host='0.0.0.0', port=3000)
-
-t = Thread(target=run)
-t.start()
-
-# BOTUN ÇALIŞMASINI BAŞLATAN SATIR EN SONDA VE EN SOLDA OLMALI
+# ── BOTU BAŞLAT ───────────────────────────────────────────
 bot.run(os.environ['TOKEN'])
